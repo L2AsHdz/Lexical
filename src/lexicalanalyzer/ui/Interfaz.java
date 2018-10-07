@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
@@ -28,6 +29,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private String path = "";
     private final ControladorArchivo file = new ControladorArchivo();
+    private static boolean notChanges = true;
     
     /**
      * Creates new form Interfaz
@@ -116,6 +118,8 @@ public class Interfaz extends javax.swing.JFrame {
                 } catch (CannotRedoException cre) {}
             }
         });
+
+        areaTexto.getDocument().addDocumentListener(new CambiosListener());
         jScrollPane2.setViewportView(areaTexto);
 
         cordCursor.setText("Linea: 1 - Columna: 1");
@@ -265,16 +269,30 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_areaTextoCaretUpdate
 
     private void itemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAbrirActionPerformed
-        JFileChooser fc = new JFileChooser();
-        fc.showOpenDialog(this);
-        path = fc.getSelectedFile().getAbsolutePath();
-        areaTexto.setText(file.readFile(path));
-          
+        if (notChanges) {
+            notChanges = false;
+            JFileChooser fc = new JFileChooser();
+            fc.showOpenDialog(this);
+            try {
+                path = fc.getSelectedFile().getAbsolutePath();
+                notChanges = true;   
+                areaTexto.setText(file.readFile(path));
+            } catch (Exception e) {
+                System.out.println("se cancelo");
+            }
+        }else {
+            cambiosSinGuardar(evt, 1);
+        }
     }//GEN-LAST:event_itemAbrirActionPerformed
 
     private void itemNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevoActionPerformed
-        areaTexto.setText("");
-        path = "";
+        if (notChanges) {
+            areaTexto.setText("");
+            path = "";
+            notChanges = true;
+        }else {
+            cambiosSinGuardar(evt, 2);
+        }
     }//GEN-LAST:event_itemNuevoActionPerformed
 
     private void itemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarActionPerformed
@@ -282,12 +300,18 @@ public class Interfaz extends javax.swing.JFrame {
         if (file.verifyFile(path)) {
             System.out.println(texto);
             file.saveFile(path, texto);
+            notChanges = true;
         }else {
             JFileChooser fc= new JFileChooser(); 
             path = ""; 
             try{
                 if(fc.showSaveDialog(null)==fc.APPROVE_OPTION){ 
-                path = fc.getSelectedFile().getAbsolutePath() + ".txt"; 
+                    try {
+                        path = fc.getSelectedFile().getAbsolutePath() + ".txt";    
+                    notChanges = true;
+                    } catch (Exception e) {
+                        System.out.println("se cancelo");
+                    }
                 }
                 System.out.println(texto);
                 file.saveFile(path, texto);
@@ -303,10 +327,15 @@ public class Interfaz extends javax.swing.JFrame {
             path = ""; 
             try{
                 if(fc.showSaveDialog(null)==fc.APPROVE_OPTION){ 
-                path = fc.getSelectedFile().getAbsolutePath() + ".txt"; 
+                    try {
+                            path = fc.getSelectedFile().getAbsolutePath() + ".txt";    
+                    } catch (Exception e) {
+                        System.out.println("se cancelo");
+                    }
                 }
                 System.out.println(texto);
                 file.saveFile(path, texto);
+                notChanges = true;
             }catch (HeadlessException ex){ 
                 //ex.printStackTrace();
             }
@@ -339,4 +368,30 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenu menuEditar;
     // End of variables declaration//GEN-END:variables
 
+    public static void setCambio(boolean change){
+        notChanges = change;
+    }
+    public void cambiosSinGuardar(ActionEvent evt, int op){
+        String[] options = {"Guardar Cambios", "Desechar Cambios", "Cancelar"};
+            int selection = JOptionPane.showOptionDialog(null, "Hay cambios sin guardar!", 
+                "Informacion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, 
+                null, options, options[0]);
+            
+            switch (selection) {
+                case 0:
+                    itemGuardarActionPerformed(evt);
+                    break;
+                case 1:
+                    if (op == 1) {
+                        notChanges = true;
+                        itemAbrirActionPerformed(evt);
+                    }else if (op ==2) {
+                        itemNuevoActionPerformed(evt);
+                    }
+                    break;
+                case 2:
+                    break;
+            }
+    }
+    
 }
