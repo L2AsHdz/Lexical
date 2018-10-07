@@ -11,19 +11,16 @@ public class CambiosListener implements DocumentListener{
     @Override
     public void insertUpdate(DocumentEvent e) {
         Interfaz.setCambio(false);
-        System.out.println("Insert text");
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
         Interfaz.setCambio(false);
-        System.out.println("Delete text");
     }
 
     @Override
     public void changedUpdate(DocumentEvent e) {
         Interfaz.setCambio(false);
-        System.out.println("Rare event");
     }
     
 }

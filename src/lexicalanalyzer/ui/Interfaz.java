@@ -8,8 +8,11 @@ import java.awt.Event;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
@@ -35,6 +38,7 @@ public class Interfaz extends javax.swing.JFrame {
      * Creates new form Interfaz
      */
     public Interfaz() {
+        validarCierre();
         initComponents();
     }
 
@@ -51,6 +55,9 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         areaTexto = new javax.swing.JTextArea();
         cordCursor = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
         itemAbrir = new javax.swing.JMenuItem();
@@ -59,6 +66,7 @@ public class Interfaz extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemGuardar = new javax.swing.JMenuItem();
         itemGuardarComo = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         menuEditar = new javax.swing.JMenu();
         itemDeshacer = new javax.swing.JMenuItem();
         itemRehacer = new javax.swing.JMenuItem();
@@ -72,11 +80,14 @@ public class Interfaz extends javax.swing.JFrame {
         itemAyuda = new javax.swing.JMenuItem();
         itemAcerca = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(new java.awt.Dimension(600, 400));
 
+        areaTexto.setBackground(new java.awt.Color(14, 23, 39));
         areaTexto.setColumns(20);
+        areaTexto.setForeground(new java.awt.Color(204, 204, 204));
         areaTexto.setRows(5);
+        areaTexto.setCaretColor(new java.awt.Color(255, 255, 255));
         UndoManager undoManager = new UndoManager();
         Document doc = areaTexto.getDocument();
 
@@ -124,22 +135,38 @@ public class Interfaz extends javax.swing.JFrame {
 
         cordCursor.setText("Linea: 1 - Columna: 1");
 
+        jButton1.setText("Analizar");
+
+        jButton2.setText("Ver Errores");
+
+        jButton3.setText("Buscar");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addGap(18, 18, 18)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cordCursor)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cordCursor)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cordCursor)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
                 .addContainerGap())
         );
 
@@ -182,6 +209,9 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
         menuArchivo.add(itemGuardarComo);
+
+        jMenuItem1.setText("Salir");
+        menuArchivo.add(jMenuItem1);
 
         jMenuBar1.add(menuArchivo);
 
@@ -356,7 +386,11 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemNuevo;
     private javax.swing.JMenuItem itemPegar;
     private javax.swing.JMenuItem itemRehacer;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -371,27 +405,53 @@ public class Interfaz extends javax.swing.JFrame {
     public static void setCambio(boolean change){
         notChanges = change;
     }
+    
     public void cambiosSinGuardar(ActionEvent evt, int op){
         String[] options = {"Guardar Cambios", "Desechar Cambios", "Cancelar"};
-            int selection = JOptionPane.showOptionDialog(null, "Hay cambios sin guardar!", 
-                "Informacion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, 
-                null, options, options[0]);
-            
-            switch (selection) {
-                case 0:
-                    itemGuardarActionPerformed(evt);
-                    break;
-                case 1:
-                    if (op == 1) {
+        int selection = JOptionPane.showOptionDialog(null, "Hay cambios sin guardar!", 
+            "Informacion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, 
+            null, options, options[0]);
+
+        switch (selection) {
+            case 0:
+                itemGuardarActionPerformed(evt);
+                break;
+            case 1:
+                switch (op) {
+                    case 0:
+                        System.exit(0);
+                        break;
+                    case 1:
                         notChanges = true;
                         itemAbrirActionPerformed(evt);
-                    }else if (op ==2) {
+                        break;
+                    case 2:
                         itemNuevoActionPerformed(evt);
+                        break;
+                }
+                break;
+            case 2:
+                
+                break;
+        }
+    }
+
+    private void validarCierre() {
+        try {
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e){
+                    if (notChanges) {
+                        System.exit(0);
+                    }else {
+                        cambiosSinGuardar(null, 0);
                     }
-                    break;
-                case 2:
-                    break;
-            }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
 }
