@@ -29,21 +29,11 @@ public class Interfaz extends javax.swing.JFrame {
     private String path = "";
     private final ControladorArchivo file = new ControladorArchivo();
     
-    private final UndoManager undoManager = new UndoManager();
-    private final Document doc;
-    
-    private final KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(
-            KeyEvent.VK_Z, Event.CTRL_MASK);
-    private final KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(
-            KeyEvent.VK_Y, Event.CTRL_MASK);
-    
     /**
      * Creates new form Interfaz
      */
     public Interfaz() {
         initComponents();
-        doc = areaTexto.getDocument();
-        undoredo();
     }
 
     /**
@@ -85,9 +75,45 @@ public class Interfaz extends javax.swing.JFrame {
 
         areaTexto.setColumns(20);
         areaTexto.setRows(5);
+        UndoManager undoManager = new UndoManager();
+        Document doc = areaTexto.getDocument();
+
+        doc.addUndoableEditListener(new UndoableEditListener() {
+            @Override
+            public void undoableEditHappened(UndoableEditEvent e) {
+                undoManager.addEdit(e.getEdit());
+            }
+        });
         areaTexto.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 areaTextoCaretUpdate(evt);
+            }
+        });
+        KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(
+            KeyEvent.VK_Z, Event.CTRL_MASK);
+        KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(
+            KeyEvent.VK_Y, Event.CTRL_MASK);
+
+        // Map undo action
+        areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)
+        .put(undoKeyStroke, "undoKeyStroke");
+        areaTexto.getActionMap().put("undoKeyStroke", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    undoManager.undo();
+                } catch (CannotUndoException cue) {}
+            }
+        });
+        // Map redo action
+        areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)
+        .put(redoKeyStroke, "redoKeyStroke");
+        areaTexto.getActionMap().put("redoKeyStroke", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    undoManager.redo();
+                } catch (CannotRedoException cre) {}
             }
         });
         jScrollPane2.setViewportView(areaTexto);
@@ -159,10 +185,20 @@ public class Interfaz extends javax.swing.JFrame {
 
         itemDeshacer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         itemDeshacer.setText("Deshacer");
+        itemDeshacer.addActionListener((ActionEvent e) -> {
+            try {
+                undoManager.undo();
+            } catch (CannotUndoException cue) {}
+        });
         menuEditar.add(itemDeshacer);
 
         itemRehacer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         itemRehacer.setText("Rehacer");
+        itemRehacer.addActionListener((ActionEvent e) -> {
+            try {
+                undoManager.redo();
+            } catch (CannotRedoException cre) {}
+        });
         menuEditar.add(itemRehacer);
         menuEditar.add(jSeparator3);
 
@@ -303,47 +339,4 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenu menuEditar;
     // End of variables declaration//GEN-END:variables
 
-    private void undoredo(){
-        doc.addUndoableEditListener(new UndoableEditListener() {
-        @Override
-        public void undoableEditHappened(UndoableEditEvent e) {
-            undoManager.addEdit(e.getEdit());
-        }
-        });
-        
-        itemDeshacer.addActionListener((ActionEvent e) -> {
-            try {
-                undoManager.undo();
-            } catch (CannotUndoException cue) {}
-        });
-        
-        itemRehacer.addActionListener((ActionEvent e) -> {
-            try {
-                undoManager.redo();
-            } catch (CannotRedoException cre) {}
-        });
-        
-        // Map undo action
-        areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)
-                .put(undoKeyStroke, "undoKeyStroke");
-        areaTexto.getActionMap().put("undoKeyStroke", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    undoManager.undo();
-                 } catch (CannotUndoException cue) {}
-            }
-        });
-        // Map redo action
-        areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)
-                .put(redoKeyStroke, "redoKeyStroke");
-        areaTexto.getActionMap().put("redoKeyStroke", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    undoManager.redo();
-                 } catch (CannotRedoException cre) {}
-            }
-        });
-    }
 }

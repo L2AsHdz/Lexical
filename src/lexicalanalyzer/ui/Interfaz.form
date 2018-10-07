@@ -73,6 +73,7 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JMenuItem()"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="itemDeshacer.addActionListener((ActionEvent e) -&gt; {&#xa;    try {&#xa;        undoManager.undo();&#xa;    } catch (CannotUndoException cue) {}&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="itemRehacer">
@@ -84,6 +85,7 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JMenuItem()"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="itemRehacer.addActionListener((ActionEvent e) -&gt; {&#xa;    try {&#xa;        undoManager.redo();&#xa;    } catch (CannotRedoException cre) {}&#xa;});"/>
               </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator3">
@@ -229,6 +231,10 @@
               <Events>
                 <EventHandler event="caretUpdate" listener="javax.swing.event.CaretListener" parameters="javax.swing.event.CaretEvent" handler="areaTextoCaretUpdate"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="UndoManager undoManager = new UndoManager();&#xa;Document doc = areaTexto.getDocument();&#xa;&#xa;doc.addUndoableEditListener(new UndoableEditListener() {&#xa;@Override&#xa;public void undoableEditHappened(UndoableEditEvent e) {&#xa;    undoManager.addEdit(e.getEdit());&#xa;}&#xa;});"/>
+                <AuxValue name="JavaCodeGenerator_ListenersCodePost" type="java.lang.String" value="KeyStroke undoKeyStroke = KeyStroke.getKeyStroke(&#xa;        KeyEvent.VK_Z, Event.CTRL_MASK);&#xa;KeyStroke redoKeyStroke = KeyStroke.getKeyStroke(&#xa;        KeyEvent.VK_Y, Event.CTRL_MASK);&#xa;&#xa;// Map undo action&#xa;areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)&#xa;        .put(undoKeyStroke, &quot;undoKeyStroke&quot;);&#xa;areaTexto.getActionMap().put(&quot;undoKeyStroke&quot;, new AbstractAction() {&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e) {&#xa;        try {&#xa;            undoManager.undo();&#xa;         } catch (CannotUndoException cue) {}&#xa;    }&#xa;});&#xa;// Map redo action&#xa;areaTexto.getInputMap(areaTexto.WHEN_IN_FOCUSED_WINDOW)&#xa;        .put(redoKeyStroke, &quot;redoKeyStroke&quot;);&#xa;areaTexto.getActionMap().put(&quot;redoKeyStroke&quot;, new AbstractAction() {&#xa;    @Override&#xa;    public void actionPerformed(ActionEvent e) {&#xa;        try {&#xa;            undoManager.redo();&#xa;         } catch (CannotRedoException cre) {}&#xa;    }&#xa;});"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
