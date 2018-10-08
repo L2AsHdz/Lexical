@@ -104,7 +104,15 @@ public class Interfaz extends javax.swing.JFrame {
             new String [] {
                 "Nombre del Token", "Lexema", "Posicion"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tableTokens);
 
         javax.swing.GroupLayout reporteTokenLayout = new javax.swing.GroupLayout(reporteToken.getContentPane());
@@ -153,14 +161,14 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(reporteErroresLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         reporteErroresLayout.setVerticalGroup(
             reporteErroresLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(reporteErroresLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);

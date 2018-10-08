@@ -6,10 +6,10 @@ import lexicalanalyzer.backend.lexemas.Error;
 
 public class Control {
     private final char[] ABECEDARIO = {'a','d','g','h','j','k','l',
-                            'm','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                            'm','n','o','q','u','x','y','z',
                             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
                             'P','Q','R','S','T','U','V','W','X','Y','Z'};
-    private final char[] RESTANTES = {'b','c','e','f','i'};
+    private final char[] RESTANTES = {'b','c','e','f','i','p','r','s','t','v','w'};
     private final char[] DIGITOS = {'0','1','2','3','4','5','6','7','8','9'};
     private final char[] SIGNOS_AGRUPACION = {'(',')','{','}','[',']'};
     private final char[] SIGNOS_PUNTUACION = {',','.',';',':'};
@@ -70,7 +70,7 @@ public class Control {
                               caracteres[i] == '%') {
                         cambioEstado(14, i);
                         posicion = "("+fila+","+columna+")";
-                    }else if (isOfAbecedario(i)) {
+                    }else if (isOfAbecedario(i) || caracteres[i] == '_') {
                         cambioEstado(22, i);
                         posicion = "("+fila+","+columna+")";
                     }else if (caracteres[i] == 'b') {
@@ -88,11 +88,33 @@ public class Control {
                     }else if (caracteres[i] == 'i') {
                         cambioEstado(62, i);
                         posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'p') {
+                        cambioEstado(84, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'r') {
+                        cambioEstado(109, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 's') {
+                        cambioEstado(115, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 't') {
+                        cambioEstado(125, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'v') {
+                        cambioEstado(132, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'w') {
+                        cambioEstado(136, i);
+                        posicion = "("+fila+","+columna+")";
                     }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         columna++;
                     }else if (caracteres[i] =='\n') {
                         fila++;
                         columna = 0;
+                    }else {
+                        lexema += caracteres[i];
+                        posicion = "("+fila+","+(columna+1)+")";
+                        error();
                     }
                     break;
                 case 1:
