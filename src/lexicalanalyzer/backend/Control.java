@@ -41,12 +41,9 @@ public class Control {
         columna = 0;
         fila = 1;
         
-        //En estados que no son finales hay que agregar error al recibir espacio
+        //Cada estado se convierte en un automata, cada transicion en un if.
         for (int i = 0; i < caracteres.length; i++) {
             switch (estadoActual) {
-                case -1:
-                    
-                    break;
                 case 0:
                     if (caracteres[i] == '0') {
                         cambioEstado(1, i);
@@ -920,13 +917,6 @@ public class Control {
                     break;
             }
         }
-//        for (TokenValido t : tokensValidos) {
-//            System.out.println("Token: " + t.getNombreToken() + " Lexema: " + t.getLexema() + " Posicion: " + t.getPosicion());
-//        }
-//        
-//        for (Error e : errores) {
-//            System.out.println("Error - " + " Lexema: " + e.getLexema() + " Posicion: " + e.getPosicion());
-//        }
     }
 
     public ArrayList<TokenValido> getTokensValidos() {
@@ -937,12 +927,14 @@ public class Control {
         return errores;
     }
     
+    //metodo utilizado para hacer latransicion de un estadoa otro.
     private void cambioEstado(int newEstado, int index){
         estadoActual = newEstado;
         lexema += caracteres[index];
         columna++; 
     }
     
+    //metodoque verifica si el caracter actual es un numero digito que no sea 0
     private boolean isNumeroMayorACero(int index){
         boolean igualdad = false;
         for (int i = 1; i < DIGITOS.length; i++) {
@@ -953,6 +945,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo que verifica que el caracter actual sea un digito
     private boolean isDigito(int index){
         boolean igualdad = false;
         for (int i = 0; i < DIGITOS.length; i++) {
@@ -963,6 +956,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo que verifica que el caracter actual es un signo de puntuacion
     private boolean isSigPuntuacion(int index){
         boolean igualdad = false;
         for (int i = 0; i < SIGNOS_PUNTUACION.length; i++) {
@@ -973,6 +967,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo que verifica que el caracter actual sea un signo de agrupacion
     private boolean isSigAgrupacion(int index){
         boolean igualdad = false;
         for (int i = 0; i < SIGNOS_AGRUPACION.length; i++) {
@@ -983,6 +978,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo que verifica que el caracter actual sea parte del abecedario
     private boolean isOfAbecedario(int index){
         boolean igualdad = false;
         for (int i = 0; i < ABECEDARIO.length; i++) {
@@ -993,6 +989,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo que verifica que el caracter actual sea parte del alfabeto aceptado por un identificador
     private boolean isIdentificador(int index){
         boolean igualdad = false;
         for (int i = 0; i < ABECEDARIO.length; i++) {
@@ -1016,6 +1013,7 @@ public class Control {
         return igualdad;
     }
     
+    //metodo utilizado para realizar una transicion normal en los estados de palabras reservadas
     private int transicionUnEstado(char exclusion, int nextEstado, int index){
         if (caracteres[index] != exclusion && isIdentificador(index)) {
             cambioEstado(23, index);
@@ -1035,6 +1033,7 @@ public class Control {
         return index;
     }
     
+    //metodo utilizado para realizar una transicion con dos excepxiones
     private int transDobleConPosibleError(char c1, char c2, int e1, int e2, int index){
         if (isIdentificador(index) && caracteres[index] != c1 && caracteres[index] != c2) {
             cambioEstado(23, index);
@@ -1056,6 +1055,7 @@ public class Control {
         return index;
     }
     
+    //metodo utilizado para realizar una trancision con tres excepciones
     private int transTripleConPosibleError(char c1, char c2, char c3, int e1, int e2, int e3, int index){
         if (isIdentificador(index) && caracteres[index] != c1 && caracteres[index] != c2 && caracteres[index] != c3) {
             cambioEstado(23, index);
@@ -1079,6 +1079,7 @@ public class Control {
         return index;
     }
     
+    //metodo que se utiliza para estados finales de palabras reservadas
     private int estadoExtremo(int index){
         if (isIdentificador(index)) {
             cambioEstado(23, index);
@@ -1096,6 +1097,7 @@ public class Control {
         return index;
     }
     
+    //metodo usado para añadir un token aceptado
     private void estadoFinal(String string){
         tokensValidos.add(new TokenValido(string, lexema, posicion));
         estadoActual = 0;
@@ -1103,6 +1105,7 @@ public class Control {
         columna++;
     }
     
+    //registra un error
     private void error(){
         errores.add(new Error(lexema, posicion));
         estadoActual = 0;

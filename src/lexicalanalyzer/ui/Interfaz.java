@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import static javafx.scene.paint.Color.color;
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -79,7 +78,7 @@ public class Interfaz extends javax.swing.JFrame {
         areaTexto = new javax.swing.JTextArea();
         cordCursor = new javax.swing.JLabel();
         btnAnalizar = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
@@ -89,7 +88,6 @@ public class Interfaz extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         itemGuardar = new javax.swing.JMenuItem();
         itemGuardarComo = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         menuEditar = new javax.swing.JMenu();
         itemDeshacer = new javax.swing.JMenuItem();
         itemRehacer = new javax.swing.JMenuItem();
@@ -97,8 +95,6 @@ public class Interfaz extends javax.swing.JFrame {
         itemCortar = new javax.swing.JMenuItem(new DefaultEditorKit.CutAction());
         itemCopiar = new javax.swing.JMenuItem(new DefaultEditorKit.CopyAction());
         itemPegar = new javax.swing.JMenuItem(new DefaultEditorKit.PasteAction());
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        itemBuscar = new javax.swing.JMenuItem();
         menuAyuda = new javax.swing.JMenu();
         itemAyuda = new javax.swing.JMenuItem();
         itemAcerca = new javax.swing.JMenuItem();
@@ -243,10 +239,10 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Buscar");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnBuscarActionPerformed(evt);
             }
         });
 
@@ -257,10 +253,10 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnAnalizar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                 .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(btnBuscar)
                 .addGap(54, 54, 54)
                 .addComponent(cordCursor)
                 .addContainerGap())
@@ -269,12 +265,12 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cordCursor)
                     .addComponent(btnAnalizar)
-                    .addComponent(jButton3)
+                    .addComponent(btnBuscar)
                     .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -319,9 +315,6 @@ public class Interfaz extends javax.swing.JFrame {
         });
         menuArchivo.add(itemGuardarComo);
 
-        jMenuItem1.setText("Salir");
-        menuArchivo.add(jMenuItem1);
-
         jMenuBar1.add(menuArchivo);
 
         menuEditar.setText("Editar");
@@ -356,11 +349,6 @@ public class Interfaz extends javax.swing.JFrame {
         itemPegar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         itemPegar.setText("Pegar");
         menuEditar.add(itemPegar);
-        menuEditar.add(jSeparator4);
-
-        itemBuscar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
-        itemBuscar.setText("Buscar");
-        menuEditar.add(itemBuscar);
 
         jMenuBar1.add(menuEditar);
 
@@ -370,6 +358,11 @@ public class Interfaz extends javax.swing.JFrame {
         menuAyuda.add(itemAyuda);
 
         itemAcerca.setText("Acerca de");
+        itemAcerca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAcercaActionPerformed(evt);
+            }
+        });
         menuAyuda.add(itemAcerca);
 
         jMenuBar1.add(menuAyuda);
@@ -380,20 +373,17 @@ public class Interfaz extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Evento utilizado para conocer la posicion del cursor en el area de texto 
     private void areaTextoCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_areaTextoCaretUpdate
         javax.swing.JTextArea editArea = (javax.swing.JTextArea)evt.getSource();
         int linea = 1;
@@ -411,6 +401,7 @@ public class Interfaz extends javax.swing.JFrame {
         cordCursor.setText("Linea: " + linea + " - Columna: " + columna);
     }//GEN-LAST:event_areaTextoCaretUpdate
 
+    //Abre un nuevo archivo, validando si el actual ya esta guardado
     private void itemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAbrirActionPerformed
         if (notChanges) {
             notChanges = false;
@@ -428,6 +419,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_itemAbrirActionPerformed
 
+    //Crea un nuevo archivo valida si el actual yaesta guardado
     private void itemNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevoActionPerformed
         if (notChanges) {
             areaTexto.setText("");
@@ -438,10 +430,11 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_itemNuevoActionPerformed
 
+    //Guarda un documento, dependiendo desi es un archivo por primera vez abierto
+    //da la opcion al usuario de escoger donde se guardara
     private void itemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarActionPerformed
         String texto = areaTexto.getText();
         if (file.verifyFile(path)) {
-            System.out.println(texto);
             file.saveFile(path, texto);
             notChanges = true;
         }else {
@@ -456,7 +449,6 @@ public class Interfaz extends javax.swing.JFrame {
                         System.out.println("se cancelo");
                     }
                 }
-                System.out.println(texto);
                 file.saveFile(path, texto);
             }catch (HeadlessException ex){ 
                 //ex.printStackTrace();
@@ -464,6 +456,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_itemGuardarActionPerformed
 
+    //Guarda el documento en una nueva ruta indicada por el usuario
     private void itemGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarComoActionPerformed
         String texto = areaTexto.getText();
         JFileChooser fc= new JFileChooser(); 
@@ -476,7 +469,6 @@ public class Interfaz extends javax.swing.JFrame {
                         System.out.println("se cancelo");
                     }
                 }
-                System.out.println(texto);
                 file.saveFile(path, texto);
                 notChanges = true;
             }catch (HeadlessException ex){ 
@@ -484,6 +476,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
     }//GEN-LAST:event_itemGuardarComoActionPerformed
 
+    //Analiza el texto, detecta errores y si no los hubiera muestra reporte de tokens aceptados
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         String texto = areaTexto.getText() + " ";
         char[] caracteres = texto.toCharArray();
@@ -498,18 +491,26 @@ public class Interfaz extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    //boton utilizado para buscar concidencias de texto en el area de trabajo
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         buscarpalabra(areaTexto, txtBusqueda.getText());
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    //Muestra informacion del programador
+    private void itemAcercaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAcercaActionPerformed
+        String mensaje = "Proyecto Lenguajes Formales: \n\t\tAnalizador Lexico\n"
+                        + "\n\n\t\tAsael Hernadez\nEstudiante Ingenieria en Sistemas";
+        JOptionPane.showMessageDialog(null, mensaje);
+    }//GEN-LAST:event_itemAcercaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaTexto;
     private javax.swing.JButton btnAnalizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JLabel cordCursor;
     private javax.swing.JMenuItem itemAbrir;
     private javax.swing.JMenuItem itemAcerca;
     private javax.swing.JMenuItem itemAyuda;
-    private javax.swing.JMenuItem itemBuscar;
     private javax.swing.JMenuItem itemCopiar;
     private javax.swing.JMenuItem itemCortar;
     private javax.swing.JMenuItem itemDeshacer;
@@ -518,9 +519,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemNuevo;
     private javax.swing.JMenuItem itemPegar;
     private javax.swing.JMenuItem itemRehacer;
-    private javax.swing.JButton jButton3;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -528,7 +527,6 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuAyuda;
     private javax.swing.JMenu menuEditar;
@@ -543,9 +541,10 @@ public class Interfaz extends javax.swing.JFrame {
         notChanges = change;
     }
     
+    //metodo que se encarga de buscar cadenas en el textarea
     public void buscarpalabra(JTextArea area1, String texto) {
         if (texto.length() >= 1) {
-            DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
+            DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GRAY);
             Highlighter h = area1.getHighlighter();
             h.removeAllHighlights();
             String text = area1.getText();
@@ -564,6 +563,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     
+    //Oyente que detecta cuando un documento es eitado
     public void cambiosSinGuardar(ActionEvent evt, int op){
         String[] options = {"Guardar Cambios", "Desechar Cambios", "Cancelar"};
         int selection = JOptionPane.showOptionDialog(null, "Hay cambios sin guardar!", 
@@ -594,6 +594,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
 
+    //Valida el cierre para evitar perder datos en el documento
     private void validarCierre() {
         try {
             this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -612,6 +613,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     
+    //genera la tabla de reportes de tokens aceptados
     private void tablaReporteTokens(){
         DefaultTableModel model = (DefaultTableModel)tableTokens.getModel();
         model.setRowCount(0);
@@ -627,6 +629,7 @@ public class Interfaz extends javax.swing.JFrame {
         tableTokens.setModel(model);
     }
     
+    //genera la tabla de errores encontrados en el documento
     private void tablaReporteErrores(){
         DefaultTableModel model = (DefaultTableModel)tableErrores.getModel();
         model.setRowCount(0);
@@ -641,6 +644,7 @@ public class Interfaz extends javax.swing.JFrame {
         tableErrores.setModel(model);
     }
     
+    //abre un JDialog
     private void abrirDialog(JDialog jd){
         jd.setResizable(false);
         jd.setLocationRelativeTo(null);
