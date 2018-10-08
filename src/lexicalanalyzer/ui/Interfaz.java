@@ -22,6 +22,7 @@ import javax.swing.text.Document;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
+import lexicalanalyzer.backend.Control;
 import lexicalanalyzer.backend.archivos.ControladorArchivo;
 
 /**
@@ -136,6 +137,11 @@ public class Interfaz extends javax.swing.JFrame {
         cordCursor.setText("Linea: 1 - Columna: 1");
 
         jButton1.setText("Analizar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Ver Errores");
 
@@ -370,6 +376,12 @@ public class Interfaz extends javax.swing.JFrame {
                 //ex.printStackTrace();
             }
     }//GEN-LAST:event_itemGuardarComoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String texto = areaTexto.getText() + " ";
+        char[] caracteres = texto.toCharArray();
+        Control control = new Control(caracteres);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaTexto;
