@@ -5,10 +5,11 @@ import lexicalanalyzer.backend.lexemas.TokenValido;
 import lexicalanalyzer.backend.lexemas.Error;
 
 public class Control {
-    private final char[] ABECEDARIO = {'a','b','c','d','e','f','g','h','i','j','k','l',
+    private final char[] ABECEDARIO = {'a','d','f','g','h','i','j','k','l',
                             'm','n','o','p','q','r','s','t','u','v','w','x','y','z',
                             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
                             'P','Q','R','S','T','U','V','W','X','Y','Z'};
+    private final char[] RESTANTES = {'b','c','e'};
     private final char[] DIGITOS = {'0','1','2','3','4','5','6','7','8','9'};
     private final char[] SIGNOS_AGRUPACION = {'(',')','{','}','[',']'};
     private final char[] SIGNOS_PUNTUACION = {',','.',';',':'};
@@ -21,6 +22,8 @@ public class Control {
     private final String SIG_PUNTUACION = "Signo de Puntuacion";
     private final String COMENTARIO1 = "Comentario de una linea";
     private final String COMENTARIO2 = "Comentario de varias lineas";
+    private final String IDENTIFICADOR = "Identificador";
+    private final String WORD_RESERVADA = "Palabra Reservada";
         
     private final char[] caracteres;
     private String lexema;
@@ -66,6 +69,15 @@ public class Control {
                     }else if (caracteres[i] == '*' || caracteres[i] == '/' ||
                               caracteres[i] == '%') {
                         cambioEstado(14, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (isOfAbecedario(i)) {
+                        cambioEstado(22, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'b') {
+                        cambioEstado(24, i);
+                        posicion = "("+fila+","+columna+")";
+                    }else if (caracteres[i] == 'c') {
+                        cambioEstado(31, i);
                         posicion = "("+fila+","+columna+")";
                     }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         columna++;
@@ -330,10 +342,12 @@ public class Control {
                     }
                     break;
                 case 20:
-                    if (caracteres[i] != '/' && caracteres[i] != '\n') {
+                    if (caracteres[i] != '/' && caracteres[i] != '\n' && caracteres[i] != '*') {
                         cambioEstado(19, i);
                     }else if (caracteres[i]  == '/') {
                         cambioEstado(21, i);
+                    }else if (caracteres[i] == '*') {
+                        cambioEstado(20, i);
                     }else if (caracteres[i] == '\n') {
                         lexema += caracteres[i];
                         fila++;
@@ -354,12 +368,271 @@ public class Control {
                     } 
                     break;
                 case 22:
+                    if (isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
                     break;
                 case 23:
+                    if (isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
                     break;
                 case 24:
+                    if (isIdentificador(i) && caracteres[i] != 'o') {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'o') {
+                        cambioEstado(25, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
                     break;
                 case 25:
+                    if (caracteres[i] != 'o'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'o') {
+                        cambioEstado(26, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 26:
+                    if (caracteres[i] != 'l'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'l') {
+                        cambioEstado(27, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 27:
+                    if (caracteres[i] != 'e'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'e') {
+                        cambioEstado(28, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 28:
+                    if (caracteres[i] != 'a'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'a') {
+                        cambioEstado(29, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 29:
+                    if (caracteres[i] != 'n'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'n') {
+                        cambioEstado(30, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 30:
+                    if (isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(WORD_RESERVADA);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(WORD_RESERVADA);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(WORD_RESERVADA);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 31:
+                    if (isIdentificador(i) && caracteres[i] != 'l' && caracteres[i] != 'a') {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'l') {
+                        cambioEstado(32, i);
+                    }else if (caracteres[i] == 'a') {
+                        cambioEstado(33, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 32:
+                    if (caracteres[i] != 'a'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'a') {
+                        cambioEstado(33, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 33:
+                    if (caracteres[i] != 's'&& isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 's') {
+                        cambioEstado(34, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 34:
+                    if (caracteres[i] != 's'&& caracteres[i] != 'e' && isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 's') {
+                        cambioEstado(35, i);
+                    }else if (caracteres[i] == 'e') {
+                        cambioEstado(36, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 35:
+                    if (isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(WORD_RESERVADA);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(WORD_RESERVADA);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(WORD_RESERVADA);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 36:
+                    if (isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(WORD_RESERVADA);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(WORD_RESERVADA);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(WORD_RESERVADA);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 37:
+                    break;
+                case 38:
+                    break;
+                case 39:
+                    break;
+                case 40:
+                    break;
+                case 41:
+                    break;
+                case 42:
+                    break;
+                case 43:
+                    break;
+                case 44:
+                    break;
+                case 45:
                     break;
             }
         }
@@ -370,6 +643,14 @@ public class Control {
         for (Error e : errores) {
             System.out.println("Error - " + " Lexema: " + e.getLexema() + " Posicion: " + e.getPosicion());
         }
+    }
+
+    public ArrayList<TokenValido> getTokensValidos() {
+        return tokensValidos;
+    }
+
+    public ArrayList<Error> getErrores() {
+        return errores;
     }
     
     private void cambioEstado(int newEstado, int index){
@@ -418,6 +699,39 @@ public class Control {
         return igualdad;
     }
     
+    private boolean isOfAbecedario(int index){
+        boolean igualdad = false;
+        for (int i = 0; i < ABECEDARIO.length; i++) {
+            if (caracteres[index] == ABECEDARIO[i]) {
+                igualdad = true;
+            }
+        }
+        return igualdad;
+    }
+    
+    private boolean isIdentificador(int index){
+        boolean igualdad = false;
+        for (int i = 0; i < ABECEDARIO.length; i++) {
+            if (caracteres[index] == ABECEDARIO[i]) {
+                igualdad = true;
+            }
+        }
+        for (int i = 0; i < RESTANTES.length; i++) {
+            if (caracteres[index] == RESTANTES[i]) {
+                igualdad = true;
+            }
+        }
+        for (int i = 0; i < DIGITOS.length; i++) {
+            if (caracteres[index] == DIGITOS[i]) {
+                igualdad = true;
+            }
+        }
+        if (caracteres[index] == '_' || caracteres[index] == '-') {
+            igualdad = true;
+        }
+        return igualdad;
+    }
+    
     private void estadoFinal(String string){
         tokensValidos.add(new TokenValido(string, lexema, posicion));
         estadoActual = 0;
@@ -431,4 +745,6 @@ public class Control {
         lexema = "";
         columna++;
     }
+    
+    
 }
