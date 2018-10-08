@@ -633,7 +633,21 @@ public class Control {
                     i = transicionUnEstado('t', 77, i);
                     break;
                 case 77:
-                    i = transicionUnEstado('e', 78, i);
+                    if (caracteres[i] != 'e' && isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'e') {
+                        cambioEstado(78, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(WORD_RESERVADA);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(WORD_RESERVADA);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
                     break;
                 case 78:
                     i = transicionUnEstado('r', 79, i);
@@ -654,8 +668,233 @@ public class Control {
                     i= estadoExtremo(i);
                     break;
                 case 84:
+                    i = transTripleConPosibleError('a', 'r', 'u', 85, 91, 104, i);
                     break;
                 case 85:
+                    i = transicionUnEstado('c', 86, i);
+                    break;
+                case 86:
+                    i = transicionUnEstado('k', 87, i);
+                    break;
+                case 87:
+                    i = transicionUnEstado('a', 88, i);
+                    break;
+                case 88:
+                    i = transicionUnEstado('g', 89, i);
+                    break;
+                case 89:
+                    i = transicionUnEstado('e', 90, i);
+                    break;
+                case 90:
+                    i = estadoExtremo(i);
+                    break;
+                case 91:
+                    if (caracteres[i] != 'i'&& caracteres[i] != 'o' && isIdentificador(i)) {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'i') {
+                        cambioEstado(92, i);
+                    }else if (caracteres[i] == 'o') {
+                        cambioEstado(97, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(IDENTIFICADOR);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(IDENTIFICADOR);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(IDENTIFICADOR);
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 92:
+                    i = transicionUnEstado('v', 93, i);
+                    break;
+                case 93:
+                    i = transicionUnEstado('a', 94, i);
+                    break;
+                case 94:
+                    i = transicionUnEstado('t', 95, i);
+                    break;
+                case 95:
+                    i = transicionUnEstado('e', 96, i);
+                    break;
+                case 96:
+                    i = estadoExtremo(i);
+                    break;
+                case 97:
+                    i = transicionUnEstado('t', 98, i);
+                    break;
+                case 98:
+                    i = transicionUnEstado('e', 99, i);
+                    break;
+                case 99:
+                    i = transicionUnEstado('c', 100, i);
+                    break;
+                case 100:
+                    i = transicionUnEstado('t', 101, i);
+                    break;
+                case 101:
+                    i = transicionUnEstado('e', 102, i);
+                    break;
+                case 102:
+                    i = transicionUnEstado('d', 103, i);
+                    break;
+                case 103:
+                    i = estadoExtremo(i);
+                    break;
+                case 104:
+                    i = transicionUnEstado('b', 105, i);
+                    break;
+                case 105:
+                    i = transicionUnEstado('l', 106, i);
+                    break;
+                case 106:
+                    i = transicionUnEstado('i', 107, i);
+                    break;
+                case 107:
+                    i = transicionUnEstado('c', 108, i);
+                    break;
+                case 108:
+                    i = estadoExtremo(i);
+                    break;
+                case 109:
+                    if (isIdentificador(i) && caracteres[i] != 'e') {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'e') {
+                        cambioEstado(110, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 110:
+                    i = transicionUnEstado('t', 111, i);
+                    break;
+                case 111:
+                    i = transicionUnEstado('u', 112, i);
+                    break;
+                case 112:
+                    i = transicionUnEstado('r', 113, i);
+                    break;
+                case 113:
+                    i = transicionUnEstado('n', 114, i);
+                    break;
+                case 114:
+                    i = estadoExtremo(i);
+                    break;
+                case 115:
+                    transDobleConPosibleError('h', 't', 116, 120, i);
+                    break;
+                case 116:
+                    i = transicionUnEstado('o', 117, i);
+                    break;
+                case 117:
+                    i = transicionUnEstado('r', 118, i);
+                    break;
+                case 118:
+                    i = transicionUnEstado('t', 119, i);
+                    break;
+                case 119:
+                    i = estadoExtremo(i);
+                    break;
+                case 120:
+                    i = transicionUnEstado('a', 121, i);
+                    break;
+                case 121:
+                    i = transicionUnEstado('t', 122, i);
+                    break;
+                case 122:
+                    i = transicionUnEstado('i', 123, i);
+                    break;
+                case 123:
+                    i = transicionUnEstado('c', 124, i);
+                    break;
+                case 124:
+                    i = estadoExtremo(i);
+                    break;
+                case 125:
+                    i = transDobleConPosibleError('h', 'r', 126, 129, i);
+                    break;
+                case 126:
+                    i = transicionUnEstado('e', 127, i);
+                    break;
+                case 127:
+                    i = transicionUnEstado('n', 128, i);
+                    break;
+                case 128:
+                    i = estadoExtremo(i);
+                    break;
+                case 129:
+                    i = transicionUnEstado('u', 130, i);
+                    break;
+                case 130:
+                    i = transicionUnEstado('e', 131, i);
+                    break;
+                case 131:
+                    i = estadoExtremo(i);
+                    break;
+                case 132:
+                    if (isIdentificador(i) && caracteres[i] != 'o') {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'o') {
+                        cambioEstado(133, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 133:
+                    i = transicionUnEstado('i', 134, i);
+                    break;
+                case 134:
+                    i = transicionUnEstado('d', 135, i);
+                    break;
+                case 135:
+                    i = estadoExtremo(i);
+                    break;
+                case 136:
+                    if (isIdentificador(i) && caracteres[i] != 'h') {
+                        cambioEstado(23, i);
+                    }else if (caracteres[i] == 'h') {
+                        cambioEstado(137, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        error();
+                    }else if (caracteres[i] == '\n') {
+                        error();
+                        fila++;
+                        columna = 0;
+                    }else {
+                        error();
+                        i--;
+                        columna--;
+                    }
+                    break;
+                case 137:
+                    i = transicionUnEstado('i', 138, i);
+                    break;
+                case 138:
+                    i = transicionUnEstado('l', 139, i);
+                    break;
+                case 139:
+                    i = transicionUnEstado('e', 140, i);
+                    break;
+                case 140:
+                    i = estadoExtremo(i);
                     break;
             }
         }
