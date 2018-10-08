@@ -5,11 +5,11 @@ import lexicalanalyzer.backend.lexemas.TokenValido;
 import lexicalanalyzer.backend.lexemas.Error;
 
 public class Control {
-    private final char[] ABECEDARIO = {'a','d','f','g','h','i','j','k','l',
+    private final char[] ABECEDARIO = {'a','d','g','h','j','k','l',
                             'm','n','o','p','q','r','s','t','u','v','w','x','y','z',
                             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O',
                             'P','Q','R','S','T','U','V','W','X','Y','Z'};
-    private final char[] RESTANTES = {'b','c','e'};
+    private final char[] RESTANTES = {'b','c','e','f','i'};
     private final char[] DIGITOS = {'0','1','2','3','4','5','6','7','8','9'};
     private final char[] SIGNOS_AGRUPACION = {'(',')','{','}','[',']'};
     private final char[] SIGNOS_PUNTUACION = {',','.',';',':'};
@@ -730,6 +730,42 @@ public class Control {
             igualdad = true;
         }
         return igualdad;
+    }
+    
+    private int transicionUnEstado(char exclusion, int nextEstado, int index){
+        if (caracteres[index] != 'a'&& isIdentificador(index)) {
+            cambioEstado(23, index);
+        }else if (caracteres[index] == 'a') {
+            cambioEstado(29, index);
+        }else if (caracteres[index]  == ' ' || caracteres[index] == '\t') {
+            estadoFinal(IDENTIFICADOR);
+        }else if (caracteres[index] == '\n') {
+            estadoFinal(IDENTIFICADOR);
+            fila++;
+            columna = 0;
+        }else {
+            estadoFinal(IDENTIFICADOR);
+            index--;
+            columna--;
+        }
+        return index;
+    }
+    
+    private int estadoExtremo(int index){
+        if (isIdentificador(index)) {
+            cambioEstado(23, index);
+        }else if (caracteres[index]  == ' ' || caracteres[index] == '\t') {
+            estadoFinal(WORD_RESERVADA);
+        }else if (caracteres[index] == '\n') {
+            estadoFinal(WORD_RESERVADA);
+            fila++;
+            columna = 0;
+        }else {
+            estadoFinal(WORD_RESERVADA);
+            index--;
+            columna--;
+        }
+        return index;
     }
     
     private void estadoFinal(String string){
