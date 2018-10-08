@@ -20,6 +20,8 @@ public class Control {
     private final String LITERAL = "Literal";
     private final String SIG_AGRUPACION = "Signo de agrupacion";
     private final String SIG_PUNTUACION = "Signo de Puntuacion";
+    private final String COMENTARIO1 = "Comentario de una linea";
+    private final String COMENTARIO2 = "Comentario de varias lineas";
         
     private final char[] caracteres;
     private String lexema;
@@ -269,11 +271,96 @@ public class Control {
                         estadoFinal(OP_ARITMETICO);
                         fila++;
                         columna = 0;
+                    }else if (caracteres[i] =='/') {
+                        cambioEstado(15, i);
+                    }else if (caracteres[i] =='*') {
+                        cambioEstado(18, i);
                     }else {
                         estadoFinal(OP_ARITMETICO);
                         i--;
                         columna--;
                     }
+                    break;
+                case 15:
+                    if (caracteres[i] != '\n') {
+                        cambioEstado(16, i);
+                    }else if (caracteres[i] == '\n') {
+                        cambioEstado(17, i);
+                        fila++;
+                        columna = 0;
+                    }
+                    break;
+                case 16:
+                    if (caracteres[i] != '\n') {
+                        cambioEstado(16, i);
+                    }else if (caracteres[i] == '\n') {
+                        cambioEstado(17, i);
+                        fila++;
+                        columna = 0;
+                    }
+                    break;
+                case 17:
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(COMENTARIO1);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(COMENTARIO1);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(COMENTARIO1);
+                        i--;
+                        columna--;
+                    } 
+                    break;
+                case 18:
+                    if (caracteres[i] != '*') {
+                        cambioEstado(19, i);
+                    }else if (caracteres[i] == '*') {
+                        cambioEstado(20, i);
+                    }
+                    break;
+                case 19:
+                    if (caracteres[i] != '*' && caracteres[i] != '\n') {
+                        cambioEstado(19, i);
+                    }else if (caracteres[i] == '*') {
+                        cambioEstado(20, i);
+                    }else if (caracteres[i] == '\n') {
+                        lexema += caracteres[i];
+                        fila++;
+                        columna = 0;
+                    }
+                    break;
+                case 20:
+                    if (caracteres[i] != '/' && caracteres[i] != '\n') {
+                        cambioEstado(19, i);
+                    }else if (caracteres[i]  == '/') {
+                        cambioEstado(21, i);
+                    }else if (caracteres[i] == '\n') {
+                        lexema += caracteres[i];
+                        fila++;
+                        columna = 0;
+                    }
+                    break;
+                case 21:
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        estadoFinal(COMENTARIO2);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(COMENTARIO2);
+                        fila++;
+                        columna = 0;
+                    }else {
+                        estadoFinal(COMENTARIO2);
+                        i--;
+                        columna--;
+                    } 
+                    break;
+                case 22:
+                    break;
+                case 23:
+                    break;
+                case 24:
+                    break;
+                case 25:
                     break;
             }
         }
