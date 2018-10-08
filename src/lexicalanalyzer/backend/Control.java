@@ -36,6 +36,8 @@ public class Control {
         lexema = "";
         columna = 0;
         fila = 1;
+        
+        //En estados que no son finales hay que agregar error al recibir espacio
         for (int i = 0; i < caracteres.length; i++) {
             switch (estadoActual) {
                 case 0:
@@ -61,15 +63,22 @@ public class Control {
                               caracteres[i] == '%') {
                         cambioEstado(14, i);
                         posicion = "("+fila+","+columna+")";
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         columna++;
+                    }else if (caracteres[i] =='\n') {
+                        fila++;
+                        columna = 1;
                     }
                     break;
                 case 1:
                     if (caracteres[i] == '.') {
                         cambioEstado(5, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(ENTERO);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(ENTERO);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(ENTERO);
                         i--;
@@ -81,8 +90,12 @@ public class Control {
                         cambioEstado(1, i);
                     }else if (isNumeroMayorACero(i)) {
                         cambioEstado(3, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(OP_ARITMETICO);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(OP_ARITMETICO);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(OP_ARITMETICO);
                         i--;
@@ -96,6 +109,10 @@ public class Control {
                         cambioEstado(3, i);
                     }else if (caracteres[i]  == ' ') {
                         estadoFinal(ENTERO);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(ENTERO);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(ENTERO);
                         i--;
@@ -107,8 +124,12 @@ public class Control {
                         cambioEstado(5, i);
                     }else if (isDigito(i)) {
                         cambioEstado(4, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(ENTERO);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(ENTERO);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(ENTERO);
                         i--;
@@ -120,8 +141,11 @@ public class Control {
                         cambioEstado(7, i);
                     }else if (caracteres[i] == '0') {
                         cambioEstado(6, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         columna++;
+                    }else if (caracteres[i] == '\n') {
+                        fila++;
+                        columna = 1;
                     }
                     break;
                 case 6:
@@ -129,8 +153,12 @@ public class Control {
                         cambioEstado(7, i);
                     }else if (caracteres[i] == '0') {
                         cambioEstado(8, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(DECIMAL);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(DECIMAL);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(DECIMAL);
                         i--;
@@ -140,8 +168,12 @@ public class Control {
                 case 7:
                     if (isDigito(i)) {
                         cambioEstado(7, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(DECIMAL);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(DECIMAL);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(DECIMAL);
                         i--;
@@ -153,13 +185,22 @@ public class Control {
                         cambioEstado(8, i);
                     }else if (isNumeroMayorACero(i)) {
                         cambioEstado(7, i);
-                    }else if (caracteres[i]  == ' ') {
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         columna++;
+                    }else if (caracteres[i] == '\n') {
+                        fila++;
+                        columna = 1;
                     }
                     break;
                 case 9:
                     if (caracteres[i] != '"' && caracteres[i] != '\n') {
                         cambioEstado(10, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        columna++;
+                    }else if (caracteres[i] == '\n') {
+                        //error
+                        fila++;
+                        columna = 1;
                     }
                     break;
                 case 10:
@@ -167,11 +208,21 @@ public class Control {
                         cambioEstado(10, i);
                     }else if (caracteres[i] == '"') {
                         cambioEstado(11, i);
+                    }else if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
+                        columna++;
+                    }else if (caracteres[i] == '\n') {
+                        //error
+                        fila++;
+                        columna = 1;
                     }
                     break;
                 case 11:
-                    if (caracteres[i]  == ' ') {
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(LITERAL);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(LITERAL);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(LITERAL);
                         i--;
@@ -179,8 +230,12 @@ public class Control {
                     } 
                     break;
                 case 12:
-                    if (caracteres[i]  == ' ') {
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(SIG_PUNTUACION);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(SIG_PUNTUACION);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(SIG_PUNTUACION);
                         i--;
@@ -188,8 +243,12 @@ public class Control {
                     }
                     break;
                 case 13:
-                    if (caracteres[i]  == ' ') {
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(SIG_AGRUPACION);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(SIG_AGRUPACION);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(SIG_AGRUPACION);
                         i--;
@@ -197,8 +256,12 @@ public class Control {
                     }
                     break;
                 case 14:
-                    if (caracteres[i]  == ' ') {
+                    if (caracteres[i]  == ' ' || caracteres[i] == '\t') {
                         estadoFinal(OP_ARITMETICO);
+                    }else if (caracteres[i] == '\n') {
+                        estadoFinal(OP_ARITMETICO);
+                        fila++;
+                        columna = 1;
                     }else {
                         estadoFinal(OP_ARITMETICO);
                         i--;
