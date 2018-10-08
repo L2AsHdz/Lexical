@@ -8,4 +8,12 @@ public class Error {
         this.lexema = lexema;
         this.posicion = posicion;
     }
+
+    public String getLexema() {
+        return lexema;
+    }
+
+    public String getPosicion() {
+        return posicion;
+    }
 }
