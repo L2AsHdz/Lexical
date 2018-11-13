@@ -139,7 +139,7 @@ public class Interfaz extends javax.swing.JFrame {
         );
 
         reporteErrores.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        reporteErrores.setPreferredSize(new java.awt.Dimension(632, 370));
+        reporteErrores.setTitle("Errores");
         reporteErrores.setSize(new java.awt.Dimension(632, 370));
 
         tableErrores.setModel(new javax.swing.table.DefaultTableModel(
